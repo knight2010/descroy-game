@@ -1,0 +1,6 @@
+{
+  "name": "Destroy Any Website - Web Element Destruction & Practice Playground",
+  "description": "Enter any URL or select a preset site to smash, laser, burn, and inspect DOM elements. Practice web element inspection, CSS selector queries, DOM traversal, and interactive physics destruction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

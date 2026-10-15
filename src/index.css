@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --arcade-font: 'Press Start 2P', monospace;
+    --code-font: 'Fira Code', monospace;
+  }
+}
+
+.font-arcade {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-code {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f1423;
+}
+::-webkit-scrollbar-thumb {
+  background: #27314d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff2a85;
+}
+
+/* Screen shake effect */
+@keyframes screen-shake-mild {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(3px, -2px); }
+  75% { transform: translate(-2px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes screen-shake-heavy {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-8px, 6px) rotate(-0.5deg); }
+  40% { transform: translate(7px, -6px) rotate(0.6deg); }
+  60% { transform: translate(-6px, -7px) rotate(-0.3deg); }
+  80% { transform: translate(5px, 5px) rotate(0.4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake-mild {
+  animation: screen-shake-mild 0.15s ease-in-out;
+}
+
+.shake-heavy {
+  animation: screen-shake-heavy 0.3s ease-in-out;
+}
+
+/* Weapon cursor styles */
+.cursor-hammer {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23ff3366' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9'/><path d='M17.64 15 22 10.64'/><path d='m20.91 3.26-6.36 6.36'/><path d='m19.5 7.5-6-6'/></svg>") 4 28, crosshair;
+}
+
+.cursor-laser {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2300ffcc' stroke-width='2.5'><circle cx='12' cy='12' r='8'/><line x1='12' y1='2' x2='12' y2='6'/><line x1='12' y1='18' x2='12' y2='22'/><line x1='2' y1='12' x2='6' y2='12'/><line x1='18' y1='12' x2='22' y2='12'/><circle cx='12' cy='12' r='2' fill='%2300ffcc'/></svg>") 16 16, crosshair;
+}
+
+.cursor-rocket {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23ff9900' stroke-width='2'><path d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z'/><path d='m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z'/></svg>") 4 28, crosshair;
+}
+
+.cursor-flame {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='%23ff4500' stroke='%23ffd700' stroke-width='1.5'><path d='M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z'/></svg>") 16 28, crosshair;
+}
+
+.cursor-blackhole {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23b366ff' stroke-width='2'><circle cx='12' cy='12' r='4' fill='%23110033'/><path d='M12 2a10 10 0 0 1 10 10'/><path d='M2 12a10 10 0 0 1 10-10'/><path d='M12 22a10 10 0 0 1-10-10'/><path d='M22 12a10 10 0 0 1-10 10'/></svg>") 16 16, crosshair;
+}
+
+.cursor-inspect {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/><line x1='11' y1='8' x2='11' y2='14'/><line x1='8' y1='11' x2='14' y2='11'/></svg>") 11 11, crosshair;
+}
+
+.cursor-blade {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23e0e7ff' stroke-width='2'><circle cx='6' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><line x1='20' y1='4' x2='8.12' y2='15.88'/><line x1='14.47' y1='14.48' x2='20' y2='20'/><line x1='8.12' y1='8.12' x2='12' y2='12'/></svg>") 16 16, crosshair;
+}
+
+.cursor-magnet {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23f43f5e' stroke-width='2'><path d='m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.36-6.36a2.14 2.14 0 0 0-3-3L6 15'/><path d='m5 8 4 4'/><path d='m12 15 4 4'/></svg>") 16 16, grab;
+}
+
+/* CRT Scanline overlay */
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Neon glow classes */
+.glow-pink {
+  box-shadow: 0 0 15px rgba(255, 42, 133, 0.5), inset 0 0 10px rgba(255, 42, 133, 0.2);
+}
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.2);
+}
+.glow-amber {
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.5), inset 0 0 10px rgba(255, 170, 0, 0.2);
+}
