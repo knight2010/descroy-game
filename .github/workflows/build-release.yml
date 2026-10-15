@@ -1,11 +1,19 @@
 name: Build and Release
 
 on:
+  # 支持在 GitHub 网页上手动点击按钮触发，并允许自定义版本号
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: '发布版本号（例如 v1.0.0）'
+        required: true
+        default: 'v1.0.0'
+  # 支持通过 Git Tag 自动触发（例如 git push origin v1.0.0）
   push:
     tags:
       - 'v*'
 
+# 赋予 GITHUB_TOKEN 发布 Release 的写入权限
 permissions:
   contents: write
 
@@ -20,7 +28,7 @@ jobs:
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # 建议使用 Node 20（更适配 Vite 5+ 和 Tailwind v4）
+          node-version: 20
 
       - name: 安装依赖
         run: npm install --legacy-peer-deps
@@ -28,13 +36,16 @@ jobs:
       - name: 构建静态资源
         run: npm run build
 
-      - name: 压缩产物并发布 Release
+      - name: 压缩构建产物
         run: |
+          # 检查打包输出目录（默认 Vite 为 dist）
           BUILD_DIR="dist"
           if [ ! -d "$BUILD_DIR" ]; then
-            echo "错误: 未找到 $BUILD_DIR 目录，请检查打包输出目录"
+            echo "错误: 未找到 $BUILD_DIR 目录，请检查 package.json 中的 build 输出！"
             exit 1
           fi
+
+          # 进入目录打包，保证 zip 解压后直接是文件而非多一层文件夹
           cd $BUILD_DIR
           zip -r ../game-dist.zip ./*
           cd ..
@@ -42,7 +53,11 @@ jobs:
       - name: 上传至 Release
         uses: softprops/action-gh-release@v2
         with:
+          # 优先使用手动输入的版本号；若是推送 Tag 则使用该 Tag；其余情况兜底以 run_number 命名
+          tag_name: ${{ inputs.tag_name || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || format('v1.0.0-run.{0}', github.run_number) }}
+          name: ${{ inputs.tag_name || github.ref_name }}
           files: game-dist.zip
           generate_release_notes: true
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
