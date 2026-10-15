@@ -1,15 +1,13 @@
 name: Build and Release
 
 on:
-  push:
-    # 方式一：推荐通过打 tag 触发发布（例如 git push origin v1.0.0）
-    tags:
-    #  - 'v*'
-    # 方式二：如果希望每次 push 到主分支都发布，取消下面两行的注释
-    # branches:
-       - main
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: '请输入发布的版本号（例如 v1.0.0）'
+        required: true
+        default: 'v1.0.0'
 
-# 关键：赋予 GITHUB_TOKEN 创建 Release 和上传资源的权限
 permissions:
   contents: write
 
@@ -24,8 +22,8 @@ jobs:
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: 18 # 如果项目需要其他版本（如 20），可在此修改
-          cache: 'npm'      # 若使用 yarn 或 pnpm，改为 'yarn' 或 'pnpm'
+          node-version: 18
+          cache: 'npm'
 
       - name: 安装依赖
         run: npm ci || npm install
@@ -35,15 +33,7 @@ jobs:
 
       - name: 压缩静态构建产物
         run: |
-          # 请根据实际构建输出目录确认（一般是 dist、build 或 out）
-          BUILD_DIR="dist"
-          
-          if [ ! -d "$BUILD_DIR" ]; then
-            echo "错误: 未找到构建目录 $BUILD_DIR，请检查 package.json 中的 build 脚本输出路径！"
-            exit 1
-          fi
-
-          # 进入目录压缩，避免解压后带有一层外层文件夹
+          BUILD_DIR="dist" # 根据实际情况确认是 dist 还是 build
           cd $BUILD_DIR
           zip -r ../game-dist.zip ./*
           cd ..
@@ -51,8 +41,8 @@ jobs:
       - name: 发布到 GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # 如果通过 push tag 触发，会自动关联该 tag
-          # 如果通过 branch 触发，可以指定 tag_name，例如: tag_name: "latest"
+          # 使用手动输入的版本号作为 Release 的 tag
+          tag_name: ${{ github.event.inputs.tag_name }}
           files: game-dist.zip
           generate_release_notes: true
         env:
