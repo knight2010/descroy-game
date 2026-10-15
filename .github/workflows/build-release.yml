@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
@@ -31,19 +33,25 @@ jobs:
       - name: 构建静态资源
         run: npm run build
 
-      - name: 压缩静态构建产物
+      - name: 打包构建产物为 tar.gz
         run: |
           BUILD_DIR="dist" # 根据实际情况确认是 dist 还是 build
-          cd $BUILD_DIR
-          zip -r ../game-dist.zip ./*
-          cd ..
+          if [ ! -d "$BUILD_DIR" ]; then
+            echo "构建目录 $BUILD_DIR 不存在，构建可能失败了。"
+            ls -la
+            exit 1
+          fi
+          tar -czf game-dist.tar.gz -C "$BUILD_DIR" .
+
+      - name: 列出打包结果（debug）
+        run: ls -lh game-dist.tar.gz || true
 
       - name: 发布到 GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           # 使用手动输入的版本号作为 Release 的 tag
           tag_name: ${{ github.event.inputs.tag_name }}
-          files: game-dist.zip
+          files: game-dist.tar.gz
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
