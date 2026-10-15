@@ -2,11 +2,9 @@ name: Build and Release
 
 on:
   workflow_dispatch:
-    inputs:
-      tag_name:
-        description: '请输入发布的版本号（例如 v1.0.0）'
-        required: true
-        default: 'v1.0.0'
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -18,39 +16,33 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20 # 建议使用 Node 20（更适配 Vite 5+ 和 Tailwind v4）
 
       - name: 安装依赖
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 构建静态资源
         run: npm run build
 
-      - name: 打包构建产物为 tar.gz
+      - name: 压缩产物并发布 Release
         run: |
-          BUILD_DIR="dist" # 根据实际情况确认是 dist 还是 build
+          BUILD_DIR="dist"
           if [ ! -d "$BUILD_DIR" ]; then
-            echo "构建目录 $BUILD_DIR 不存在，构建可能失败了。"
-            ls -la
+            echo "错误: 未找到 $BUILD_DIR 目录，请检查打包输出目录"
             exit 1
           fi
-          tar -czf game-dist.tar.gz -C "$BUILD_DIR" .
+          cd $BUILD_DIR
+          zip -r ../game-dist.zip ./*
+          cd ..
 
-      - name: 列出打包结果（debug）
-        run: ls -lh game-dist.tar.gz || true
-
-      - name: 发布到 GitHub Release
+      - name: 上传至 Release
         uses: softprops/action-gh-release@v2
         with:
-          # 使用手动输入的版本号作为 Release 的 tag
-          tag_name: ${{ github.event.inputs.tag_name }}
-          files: game-dist.tar.gz
+          files: game-dist.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
